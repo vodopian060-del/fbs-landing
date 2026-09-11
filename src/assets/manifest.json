@@ -1,0 +1,67 @@
+{
+  "092a6bdb-fbb6-41b2-9a0f-85b79790c405": {
+    "mime": "image/png",
+    "compressed": false,
+    "ext": "png"
+  },
+  "00ca6107-f9d3-4143-95e9-ff7e96fc9745": {
+    "mime": "application/javascript",
+    "compressed": true,
+    "ext": "js"
+  },
+  "64ab3a63-9460-4113-87ac-be17eef7d475": {
+    "mime": "text/javascript",
+    "compressed": true,
+    "ext": "js"
+  },
+  "e4a930c8-ec3e-4541-897b-521a1f9bcadf": {
+    "mime": "application/javascript",
+    "compressed": true,
+    "ext": "js"
+  },
+  "634435d5-a7ad-47b0-a44d-e606b6d7e35e": {
+    "mime": "text/javascript",
+    "compressed": true,
+    "ext": "js"
+  },
+  "5f2e088f-a295-4cbe-9cef-95643a3b7c80": {
+    "mime": "text/javascript",
+    "compressed": true,
+    "ext": "js"
+  },
+  "0ccca4c5-37b0-43f5-919c-4a15d8cdab34": {
+    "mime": "font/woff2",
+    "compressed": false,
+    "ext": "woff2"
+  },
+  "240a9cfa-dbc0-4fd4-ad44-4eefd58684d7": {
+    "mime": "font/woff2",
+    "compressed": false,
+    "ext": "woff2"
+  },
+  "9e55f94d-4dc4-409e-9005-0ed5c8c14851": {
+    "mime": "font/woff2",
+    "compressed": false,
+    "ext": "woff2"
+  },
+  "dcf40ad4-9a35-439c-b12a-742a7cc9efa5": {
+    "mime": "font/woff2",
+    "compressed": false,
+    "ext": "woff2"
+  },
+  "438514da-e7d9-4a0e-b485-8a365928e7c5": {
+    "mime": "font/woff2",
+    "compressed": false,
+    "ext": "woff2"
+  },
+  "1afb11c3-ddae-44d3-a54b-643c33532183": {
+    "mime": "font/woff2",
+    "compressed": false,
+    "ext": "woff2"
+  },
+  "0d4e8a0f-e459-4e99-93dd-668a4015a052": {
+    "mime": "font/woff2",
+    "compressed": false,
+    "ext": "woff2"
+  }
+}
