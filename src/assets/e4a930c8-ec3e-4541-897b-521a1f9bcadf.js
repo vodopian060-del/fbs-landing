@@ -76,7 +76,9 @@
         const topo = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(r => r.json());
         const all = topojson.feature(topo, topo.objects.countries).features;
         this._russia = all.find(f => f.properties && f.properties.name === 'Russia');
-        this._others = all.filter(f => f !== this._russia);
+        // Единый силуэт суши без государственных границ: карта показывает города поставок,
+        // а не политическую карту, — так не рисуются и спорные границы.
+        this._land = topojson.merge(topo, topo.objects.countries.geometries);
         this._draw();
       } catch (e) {
         this.innerHTML = '<div style="padding:24px;font:14px Inter,sans-serif;opacity:.6">Карта недоступна</div>';
@@ -97,7 +99,7 @@
       const w = this.clientWidth || 900;
       const h = Math.max(280, Math.round(w * (europeOnly ? 0.62 : 0.44)));
       const accent = getComputedStyle(this).getPropertyValue('--color-accent').trim() || '#9184d9';
-      const land = 'rgba(233,233,237,0.07)';
+      const land = 'rgba(233,233,237,0.10)';
       const edge = 'rgba(233,233,237,0.22)';
 
       const projection = europeOnly
@@ -113,13 +115,9 @@
         .style('display', 'block').style('overflow', 'hidden');
       svg.selectAll('*').remove();
 
-      svg.append('g').selectAll('path').data(this._others).join('path')
-        .attr('d', path).attr('fill', 'rgba(233,233,237,0.03)')
-        .attr('stroke', 'rgba(233,233,237,0.06)').attr('stroke-width', 0.6);
-
-      svg.append('path').datum(this._russia)
+      svg.append('path').datum(this._land)
         .attr('d', path).attr('fill', land)
-        .attr('stroke', edge).attr('stroke-width', 1);
+        .attr('stroke', edge).attr('stroke-width', 0.8);
 
       const g = svg.append('g');
       const placed = [];
