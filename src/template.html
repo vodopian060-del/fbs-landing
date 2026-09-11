@@ -736,7 +736,7 @@ textarea.input { min-height: 90px; resize: vertical; }
             </div>
             <div class="l-calc-params" style="display:flex;gap:18px;font-size:12px;padding-bottom:6px">
               <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">ПЛЕЧО</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ legKm }} км</div></div>
-              <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">СТАВКА</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ rate }} ₽/т·км</div></div>
+              <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">РЕЙС</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ trip }} ₽</div></div>
               <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">МАШИНА</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ payload }} т</div></div>
             </div>
           </div>
@@ -889,7 +889,7 @@ textarea.input { min-height: 90px; resize: vertical; }
         </div>
         <div style="display:grid;gap:8px;font-size:13px;color:var(--color-neutral-400);min-width:280px">
           <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Плечо — от завода с наличием</div>
-          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Бортовой полуприцеп, {{ payload }} т полезной нагрузки</div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Машина {{ payload }} т — 20 блоков 24.6.6 или 40 блоков 12.6.6</div>
           <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Разгрузка манипулятором по согласованию</div>
         </div>
       </div>
@@ -955,15 +955,21 @@ textarea.input { min-height: 90px; resize: vertical; }
 <script type="text/x-dc" data-dc-script="">
 // ===== Параметры, которые правятся в одном месте =====
 const CONFIG = {
-  // Полезная нагрузка бортового полуприцепа, т. Число блоков в машине и
-  // число машин в партии считаются от неё (не от полной массы автопоезда 40 т).
-  payloadTons: 20,
-  // НДС 22% — применяется один раз: к цене блока и к логистике.
+  // Загрузка одной машины, т. Так возим по факту: 20 шт ФБС 24.6.6 или 40 шт 12.6.6 в машине
+  // (график перевозок, сентябрь 2026). Число блоков в машине и машин в партии считаются от неё.
+  payloadTons: 40,
+  // НДС 22% — применяется один раз к цене блока; рейс уже с НДС (см. tripIncludesVat).
   vat: 1.22,
-  // Ставка перевозки, ₽ за тонно-километр, по длине плеча.
-  // TODO: заглушка — подставить реальную ставку для борта 20 т с порожняком обратно.
-  ratePerTonKm: { short: 8, mid: 7, long: 6 },
-  rateBreakKm: { short: 300, long: 800 },   // <300 км → short, 300–800 → mid, >800 → long
+  // Доставка считается рейсами, а не за т·км: рейс = подача + километры (плечо в одну сторону).
+  // Калибровка по цене заказчику из графика перевозок ЮФО (сентябрь 2026):
+  // 45 км → 22 500 ₽, 110 км → 37 500 ₽, 560 км → 92 600 ₽. Наценка над перевозчиком уже внутри.
+  transport: {
+    tripFixed: 16000,        // ₽ за рейс: подача, погрузка краном, разгрузка
+    tripPerKm: 140,          // ₽ за км плеча
+    tripIncludesVat: true,   // TODO: подтвердить — цены заказчику в графике с НДС?
+    // Поправка по округу: московские перевозчики дороже южных. TODO: уточнить по первым рейсам в ЦФО.
+    districtFactor: { 'ЦФО': 1.15, 'ЮФО': 1.0 }
+  },
   minOrderBlocks: 200,
   // Округа, куда возим на старте: фильтрует список городов в калькуляторе и точки на карте.
   // TODO: финальный список регионов подтвердить.
@@ -1056,7 +1062,7 @@ const FAQ = [
   { q: 'Почему цена сразу с доставкой, а не отдельно?',
     a: 'Мы поставляем блоки только с доставкой на объект — это позволяет держать ответственность за срок целиком на себе. Сметчику удобнее: в КП стоит конечная цена на площадке, логистику не нужно защищать отдельной строкой.' },
   { q: 'Как считается доставка?',
-    a: 'В тонно-километрах: вес партии умножается на плечо от завода-партнёра и на ставку перевозчика за тонно-километр для бортового полуприцепа. Ставка ниже на длинном плече и выше на коротком — так работает рынок перевозок. Полезная загрузка одной машины — ' + CONFIG.payloadTons + ' тонн, число машин в партии считаем по суммарному весу. Все суммы в калькуляторе показаны с НДС 22%.' },
+    a: 'Рейсами, а не за тонно-километр. Стоимость рейса складывается из подачи машины с погрузкой и разгрузкой и из пробега до объекта — поэтому на коротком плече километр дороже, чем на длинном. В машину входит ' + CONFIG.payloadTons + ' тонн: 20 блоков ФБС 24.6.6 или 40 блоков 12.6.6. Число машин в партии считаем по суммарному весу, неполная последняя машина оплачивается как целая. Все суммы в калькуляторе показаны с НДС 22%.' },
   { q: 'Какой минимальный заказ?',
     a: 'От 200 блоков. Меньшие объёмы мы не возим: под них не собирается экономика рейса. Если объём близок к границе, напишите — иногда получается подобрать попутную загрузку.' },
   { q: 'Какие документы приходят с партией?',
@@ -1136,7 +1142,7 @@ class Component extends DCLogic {
     form.setProperty(P.title, (company || 'без названия') + ' · ' + c.city);
     form.setProperty(P.items, c.itemsSummary || 'не указаны');
     form.setProperty(P.calc, c.itemsSummary
-      ? c.qtyTotal + ' шт · ' + c.tons + ' т · ' + c.trucks + ' · ' + c.total + ' ₽ с НДС · плечо ' + c.legKm + ' км · ставка ' + c.rate + ' ₽/т·км · ' + location.href
+      ? c.qtyTotal + ' шт · ' + c.tons + ' т · ' + c.trucks + ' · ' + c.total + ' ₽ с НДС · плечо ' + c.legKm + ' км · рейс ' + fmt(c.trip) + ' ₽ · ' + location.href
       : 'калькулятор не заполнен · ' + location.href);
     form.setProperty(P.leg, String(c.legKm));
     // Город доставки подставляем, пока пользователь его не менял сам.
@@ -1161,9 +1167,12 @@ class Component extends DCLogic {
   }
 
   cityData() { return CITIES.find(c => c[0] === this.state.city) || CITIES[0]; }
-  rate(km) {
-    const r = CONFIG.ratePerTonKm, b = CONFIG.rateBreakKm;
-    return km < b.short ? r.short : km < b.long ? r.mid : r.long;
+  // Стоимость одного рейса до города (с НДС), ₽.
+  trip(km, district) {
+    const t = CONFIG.transport;
+    const f = (t.districtFactor && t.districtFactor[district]) || 1;
+    const base = (t.tripFixed + t.tripPerKm * km) * f;
+    return Math.round(t.tripIncludesVat ? base : base * VAT);
   }
 
   bump(i, d) {
@@ -1175,12 +1184,12 @@ class Component extends DCLogic {
 
   calc() {
     const [cityName, district, km] = this.cityData();
-    const rate = this.rate(km);
+    const trip = this.trip(km, district);
     const k = K[district] || 1;
 
     const rows = SPECS.map((s, i) => {
       const blockPrice = s.base * k * VAT;
-      const delivery = rate * s.weight * km * VAT;
+      const delivery = trip * s.weight / CONFIG.payloadTons;   // доля рейса по весу блока
       const per = blockPrice + delivery;
       return {
         code: s.code, dims: s.dims,
@@ -1198,14 +1207,17 @@ class Component extends DCLogic {
       };
     });
 
-    let total = 0, qtyTotal = 0, tons = 0;
-    rows.forEach(r => { total += r._per * r.qty; qtyTotal += r.qty; tons += r._w * r.qty; });
+    let goods = 0, qtyTotal = 0, tons = 0;
+    rows.forEach(r => { goods += (r._per - r._d) * r.qty; qtyTotal += r.qty; tons += r._w * r.qty; });
+    // Доставка — по целым машинам: неполная последняя машина стоит как целая.
+    const trucksN = Math.ceil(tons / CONFIG.payloadTons);
+    const total = goods + trucksN * trip;
 
     return {
-      rows, city: cityName, legKm: km, rate, qtyTotal,
+      rows, city: cityName, legKm: km, trip, qtyTotal,
       total: fmt(total),
       tons: (Math.round(tons * 10) / 10).toLocaleString('ru-RU'),
-      trucks: Math.ceil(tons / CONFIG.payloadTons) + ' маш.',
+      trucks: trucksN + ' маш.',
       avg: qtyTotal ? fmt(total / qtyTotal) : '0',
       itemsSummary: rows.filter(r => r.qty > 0).map(r => r.code.replace('-Т', '') + ' — ' + r.qty + ' шт').join(', ')
     };
@@ -1213,11 +1225,11 @@ class Component extends DCLogic {
 
   renderVals() {
     const c = this.calc();
-    const { rows, city: cityName, legKm: km, rate, qtyTotal } = c;
+    const { rows, city: cityName, legKm: km, qtyTotal } = c;
     const st = this.state;
 
     return {
-      city: cityName, legKm: km, rate: rate, payload: CONFIG.payloadTons,
+      city: cityName, legKm: km, trip: fmt(c.trip), payload: CONFIG.payloadTons,
       regionsLabel: CONFIG.regionsLabel, regionsAttr: CONFIG.regions.join(','),
       cityOptions: CITIES.filter(c => CONFIG.regions.indexOf(c[1]) !== -1).sort((a, b) => a[0].localeCompare(b[0], 'ru'))
         .map(c => ({ name: c[0], label: c[0] + ' · ' + c[1] })),
