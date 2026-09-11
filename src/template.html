@@ -583,7 +583,7 @@ textarea.input { min-height: 90px; resize: vertical; }
         <a href="#how" style="font-size:13px;text-decoration:none;color:var(--color-neutral-400)">Как работаем</a>
         <a href="#geo" style="font-size:13px;text-decoration:none;color:var(--color-neutral-400)">География</a>
         <a href="#faq" style="font-size:13px;text-decoration:none;color:var(--color-neutral-400)">Вопросы</a>
-        <a href="tel:+74950000000" style="font-size:14px;text-decoration:none;font-family:var(--font-heading);font-weight:500">+7 495 000-00-00</a>
+        <a href="{{ phoneHref }}" style="font-size:14px;text-decoration:none;font-family:var(--font-heading);font-weight:500">{{ phone }}</a>
       </nav>
     </div>
   </header>
@@ -815,15 +815,15 @@ textarea.input { min-height: 90px; resize: vertical; }
         <h2 style="font-size:38px;letter-spacing:-0.03em;margin:0 0 14px;line-height:1.05">Запросить<br>твёрдую цену</h2>
         <p style="color:var(--color-neutral-400);margin:0 0 22px;max-width:38ch;line-height:1.65">КП с ценой с НДС на объекте, сроком отгрузки и паспортами качества — в течение рабочего дня.</p>
         <div style="font-size:13px;color:var(--color-neutral-500);line-height:1.8;padding-top:20px;border-top:1px solid var(--color-divider)">
-          ООО «Неруд-Логистик»<br>
-          <a href="tel:+74950000000" style="text-decoration:none">+7 495 000-00-00</a><br>
-          <a href="mailto:zakaz@nerud-logistik.ru" style="text-decoration:none">zakaz@nerud-logistik.ru</a>
+          {{ companyName }}<br>
+          <a href="{{ phoneHref }}" style="text-decoration:none">{{ phone }}</a><br>
+          <a href="{{ emailHref }}" style="text-decoration:none">{{ email }}</a>
         </div>
       </div>
       <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
         <div class="card" style="display:flex;flex-direction:column;justify-content:center;min-height:240px;padding:32px;background:var(--color-accent-900)">
           <div style="font-family:var(--font-heading);font-size:24px;margin-bottom:10px">Заявка принята</div>
-          <p style="color:var(--color-accent-200);margin:0;line-height:1.6">Менеджер свяжется с вами для уточнения деталей. Срочно — звоните на +7 495 000-00-00.</p>
+          <p style="color:var(--color-accent-200);margin:0;line-height:1.6">Менеджер свяжется с вами для уточнения деталей. Срочно — звоните на {{ phone }}.</p>
         </div>
       </sc-if>
       <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
@@ -835,8 +835,11 @@ textarea.input { min-height: 90px; resize: vertical; }
           <div class="field"><label for="fb-city">Город доставки</label><input id="fb-city" class="input" value="{{ city }}" sc-camel-on-change="{{ noop }}" style="width:100%"></div>
           <div class="field" style="grid-column:1 / -1"><label for="fb-items">Типоразмеры и количество</label><input id="fb-items" class="input" value="{{ itemsSummary }}" sc-camel-on-change="{{ noop }}" placeholder="ФБС 24.6.6 — 400 шт" style="width:100%"></div>
           <div style="grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:20px">
-            <span style="font-size:11px;color:var(--color-neutral-600);max-width:44ch;line-height:1.5">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</span>
-            <button class="btn btn-primary" type="submit" style="padding:11px 26px">Запросить КП</button>
+            <label for="fb-consent" style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--color-neutral-500);max-width:48ch;line-height:1.5;cursor:pointer">
+              <input id="fb-consent" type="checkbox" checked="{{ consent }}" sc-camel-on-change="{{ onConsent }}" style="margin-top:2px;width:16px;height:16px;flex:none;accent-color:var(--color-accent);cursor:pointer">
+              <span>Даю согласие на обработку персональных данных в соответствии с <a href="privacy/" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
+            </label>
+            <button class="btn btn-primary" type="submit" disabled="{{ consentMissing }}" style="padding:11px 26px">Запросить КП</button>
           </div>
         </form>
       </sc-if>
@@ -847,9 +850,9 @@ textarea.input { min-height: 90px; resize: vertical; }
     <div style="max-width:1280px;margin:0 auto;padding:28px 40px 44px;display:flex;align-items:center;justify-content:space-between;gap:32px">
       <div style="display:flex;align-items:center;gap:16px">
         <img src="092a6bdb-fbb6-41b2-9a0f-85b79790c405" alt="Неруд-Логистик" style="width:60px;height:60px;object-fit:contain;background:var(--color-neutral-100);border-radius:var(--radius-md);padding:4px">
-        <div style="font-size:12px;color:var(--color-neutral-500);line-height:1.6">ООО «Неруд-Логистик»<br>Блоки ФБС по ГОСТ 13579-2018 · поставки по России</div>
+        <div style="font-size:12px;color:var(--color-neutral-500);line-height:1.6">{{ companyName }} · ИНН {{ inn }} · ОГРН {{ ogrn }}<br>{{ address }}<br><a href="{{ emailHref }}" style="text-decoration:none">{{ email }}</a> · <a href="{{ phoneHref }}" style="text-decoration:none">{{ phone }}</a></div>
       </div>
-      <div style="font-size:12px;color:var(--color-neutral-600);text-align:right;line-height:1.6">Цены предварительные и не являются офертой<br>© 2026</div>
+      <div style="font-size:12px;color:var(--color-neutral-600);text-align:right;line-height:1.6">Цены предварительные и не являются офертой<br><a href="privacy/" style="text-decoration:none;color:var(--color-neutral-500)">Политика обработки персональных данных</a><br>© 2026</div>
     </div>
   </footer>
 </div>
@@ -867,7 +870,17 @@ const CONFIG = {
   // TODO: заглушка — подставить реальную ставку для борта 20 т с порожняком обратно.
   ratePerTonKm: { short: 8, mid: 7, long: 6 },
   rateBreakKm: { short: 300, long: 800 },   // <300 км → short, 300–800 → mid, >800 → long
-  minOrderBlocks: 200
+  minOrderBlocks: 200,
+  // Реквизиты и контакты. TODO: заглушки — подставить реальные.
+  company: {
+    name: 'ООО «Неруд-Логистик»',
+    inn: '0000000000',
+    ogrn: '0000000000000',
+    address: '000000, г. Москва, ул. ____________, д. __',
+    phone: '+7 495 000-00-00',
+    phoneHref: 'tel:+74950000000',
+    email: 'zakaz@nerud-logistik.ru'
+  }
 };
 
 const SPECS = [
@@ -941,7 +954,7 @@ const FAQ = [
 const fmt = n => Math.round(n).toLocaleString('ru-RU').replace(/,/g, ' ');
 
 class Component extends DCLogic {
-  state = { city: 'Москва', qty: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, openFaq: 0, sent: false };
+  state = { city: 'Москва', qty: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, openFaq: 0, sent: false, consent: false };
 
   componentDidMount() { document.documentElement.lang = 'ru'; }
 
@@ -1014,9 +1027,15 @@ class Component extends DCLogic {
       })),
       itemsSummary: rows.filter(r => r.qty > 0).map(r => r.code.replace('-Т', '') + ' — ' + r.qty + ' шт').join(', '),
       noop: () => {},
+      companyName: CONFIG.company.name, inn: CONFIG.company.inn, ogrn: CONFIG.company.ogrn, address: CONFIG.company.address,
+      phone: CONFIG.company.phone, phoneHref: CONFIG.company.phoneHref,
+      email: CONFIG.company.email, emailHref: 'mailto:' + CONFIG.company.email,
+      consent: this.state.consent,
+      consentMissing: !this.state.consent,
+      onConsent: e => this.setState({ consent: !!e.target.checked }),
       sent: this.state.sent,
       notSent: !this.state.sent,
-      onSubmit: e => { e.preventDefault(); this.setState({ sent: true }); }
+      onSubmit: e => { e.preventDefault(); if (!this.state.consent) return; this.setState({ sent: true }); }
     };
   }
 }
