@@ -630,7 +630,7 @@ textarea.input { min-height: 90px; resize: vertical; }
             <div style="display:flex;gap:18px;font-size:12px;padding-bottom:6px">
               <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">ПЛЕЧО</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ legKm }} км</div></div>
               <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">СТАВКА</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ rate }} ₽/т·км</div></div>
-              <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">СРОК</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ lead }}</div></div>
+              <div><div style="color:var(--color-neutral-600);letter-spacing:0.06em">МАШИНА</div><div style="font-family:var(--font-heading);font-size:15px;margin-top:2px">{{ payload }} т</div></div>
             </div>
           </div>
 
@@ -657,7 +657,7 @@ textarea.input { min-height: 90px; resize: vertical; }
           <div style="padding:20px 24px;background:var(--color-section);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center">
             <div>
               <div style="font-family:var(--font-heading);font-size:34px;letter-spacing:-0.03em;line-height:1">{{ total }} ₽</div>
-              <div style="font-size:12px;color:var(--color-accent-200);margin-top:6px">итого с НДС · {{ qtyTotal }} шт · {{ tons }} т · {{ trucks }} · средняя {{ avg }} ₽ за блок · срок {{ lead }}</div>
+              <div style="font-size:12px;color:var(--color-accent-200);margin-top:6px">итого с НДС · {{ qtyTotal }} шт · {{ tons }} т · {{ trucks }} · средняя {{ avg }} ₽ за блок · график отгрузок согласуем под темп работ</div>
             </div>
             <a class="btn btn-primary" href="#request" style="text-decoration:none;padding:10px 20px;white-space:nowrap;background:rgba(233,233,237,0.06)">Запросить КП</a>
           </div>
@@ -856,6 +856,20 @@ textarea.input { min-height: 90px; resize: vertical; }
 
 </x-dc>
 <script type="text/x-dc" data-dc-script="">
+// ===== Параметры, которые правятся в одном месте =====
+const CONFIG = {
+  // Полезная нагрузка бортового полуприцепа, т. Число блоков в машине и
+  // число машин в партии считаются от неё (не от полной массы автопоезда 40 т).
+  payloadTons: 20,
+  // НДС 22% — применяется один раз: к цене блока и к логистике.
+  vat: 1.22,
+  // Ставка перевозки, ₽ за тонно-километр, по длине плеча.
+  // TODO: заглушка — подставить реальную ставку для борта 20 т с порожняком обратно.
+  ratePerTonKm: { short: 8, mid: 7, long: 6 },
+  rateBreakKm: { short: 300, long: 800 },   // <300 км → short, 300–800 → mid, >800 → long
+  minOrderBlocks: 200
+};
+
 const SPECS = [
   { code: 'ФБС 24.6.6-Т', dims: '2380 × 600 × 580', volume: 0.815, weight: 1.96, base: 5000 },
   { code: 'ФБС 24.4.6-Т', dims: '2380 × 400 × 580', volume: 0.543, weight: 1.30, base: 3450 },
@@ -865,8 +879,7 @@ const SPECS = [
   { code: 'ФБС 9.4.6-Т',  dims: '880 × 400 × 580',  volume: 0.195, weight: 0.47, base: 1350 }
 ];
 
-const LEAD = '5–7 дней';
-const VAT = 1.22;
+const VAT = CONFIG.vat;
 
 const K = { 'ЦФО': 1.00, 'СЗФО': 1.06, 'ЮФО': 1.08, 'СКФО': 1.10, 'ПФО': 0.96, 'УФО': 1.00, 'СФО': 1.12, 'ДФО': 1.40 };
 
@@ -914,7 +927,7 @@ const FAQ = [
   { q: 'Почему цена сразу с доставкой, а не отдельно?',
     a: 'Мы поставляем блоки только с доставкой на объект — это позволяет держать ответственность за срок целиком на себе. Сметчику удобнее: в КП стоит конечная цена на площадке, логистику не нужно защищать отдельной строкой.' },
   { q: 'Как считается доставка?',
-    a: 'В тонно-километрах: вес партии умножается на плечо от завода-партнёра и на ставку 6–8 ₽ за тонно-километр. Ставка ниже на длинном плече и выше на коротком — так работает рынок перевозок. Стандартная загрузка машины — 40 тонн. Все суммы в калькуляторе показаны с НДС 22%.' },
+    a: 'В тонно-километрах: вес партии умножается на плечо от завода-партнёра и на ставку перевозчика за тонно-километр для бортового полуприцепа. Ставка ниже на длинном плече и выше на коротком — так работает рынок перевозок. Полезная загрузка одной машины — ' + CONFIG.payloadTons + ' тонн, число машин в партии считаем по суммарному весу. Все суммы в калькуляторе показаны с НДС 22%.' },
   { q: 'Какой минимальный заказ?',
     a: 'От 200 блоков. Меньшие объёмы мы не возим: под них не собирается экономика рейса. Если объём близок к границе, напишите — иногда получается подобрать попутную загрузку.' },
   { q: 'Какие документы приходят с партией?',
@@ -933,7 +946,10 @@ class Component extends DCLogic {
   componentDidMount() { document.documentElement.lang = 'ru'; }
 
   cityData() { return CITIES.find(c => c[0] === this.state.city) || CITIES[0]; }
-  rate(km) { return km < 300 ? 8 : km < 800 ? 7 : 6; }
+  rate(km) {
+    const r = CONFIG.ratePerTonKm, b = CONFIG.rateBreakKm;
+    return km < b.short ? r.short : km < b.long ? r.mid : r.long;
+  }
 
   bump(i, d) {
     this.setState(st => {
@@ -971,7 +987,7 @@ class Component extends DCLogic {
     rows.forEach(r => { total += r._per * r.qty; qtyTotal += r.qty; tons += r._w * r.qty; });
 
     return {
-      city: cityName, legKm: km, rate: rate, lead: LEAD,
+      city: cityName, legKm: km, rate: rate, payload: CONFIG.payloadTons,
       cityOptions: CITIES.slice().sort((a, b) => a[0].localeCompare(b[0], 'ru'))
         .map(c => ({ name: c[0], label: c[0] + ' · ' + c[1] })),
       onCity: e => this.setState({ city: e.target.value }),
@@ -980,14 +996,14 @@ class Component extends DCLogic {
       avg: qtyTotal ? fmt(total / qtyTotal) : '0',
       qtyTotal: qtyTotal,
       tons: (Math.round(tons * 10) / 10).toLocaleString('ru-RU'),
-      trucks: Math.max(1, Math.ceil(tons / 40)) + ' маш.',
-      belowMin: qtyTotal > 0 && qtyTotal < 200,
-      needMore: Math.max(0, 200 - qtyTotal),
+      trucks: Math.ceil(tons / CONFIG.payloadTons) + ' маш.',
+      belowMin: qtyTotal > 0 && qtyTotal < CONFIG.minOrderBlocks,
+      needMore: Math.max(0, CONFIG.minOrderBlocks - qtyTotal),
       features: FEATURES,
       specs: SPECS.map(s => ({
         code: s.code, dims: s.dims,
         weight: s.weight.toFixed(2).replace('.', ','),
-        perTruck: Math.floor(40 / s.weight) + ' шт',
+        perTruck: Math.floor(CONFIG.payloadTons / s.weight) + ' шт',
         price: fmt(s.base * VAT)
       })),
       faq: FAQ.map((f, i) => ({
