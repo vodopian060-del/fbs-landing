@@ -699,17 +699,17 @@ textarea.input { min-height: 90px; resize: vertical; }
     <div style="position:absolute;top:-220px;left:38%;width:760px;height:620px;background:radial-gradient(ellipse,var(--color-accent-800) 0%,transparent 70%);opacity:0.45;pointer-events:none"></div>
     <div class="l-wrap l-hero" style="max-width:1280px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:0.92fr 1.08fr;min-height:calc(100vh - 60px);align-items:center;gap:64px;position:relative">
       <div class="l-hero-text" style="padding:64px 0">
-        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:24px">Оптовая поставка · {{ regionsLabel }}</div>
+        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-300);margin-bottom:24px">Железобетон · {{ regionsLabel }}</div>
         <h1 class="l-h1" style="font-size:58px;line-height:1;letter-spacing:-0.035em;margin:0 0 24px">Блоки ФБС<br><span style="white-space:nowrap">по ГОСТ 13579‑2018</span><br><span style="color:var(--color-neutral-500)">— от 200 штук</span></h1>
-        <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-400);max-width:44ch;margin:0 0 32px;text-wrap:pretty">Ширина 600 и 400 мм. Отгружаем с ближайшего завода-партнёра, транспорт зашит в цену — отдельного счёта за логистику не будет. Все цены с НДС 22%.</p>
+        <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-400);max-width:44ch;margin:0 0 32px;text-wrap:pretty">Фундаментные блоки шириной 400 и 600 мм с заводов-партнёров. Цена в калькуляторе — за блок на вашем объекте: доставка и НДС 22 % уже включены.</p>
         <div class="l-stats" style="display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
           <div style="padding:18px 28px 18px 0;border-right:1px solid var(--color-divider)">
             <div style="font-family:var(--font-heading);font-size:22px;letter-spacing:-0.02em">от 200 шт</div>
             <div style="font-size:11px;color:var(--color-neutral-600);margin-top:4px;letter-spacing:0.04em">МИНИМАЛЬНАЯ ПАРТИЯ</div>
           </div>
           <div style="padding:18px 28px;border-right:1px solid var(--color-divider)">
-            <div style="font-family:var(--font-heading);font-size:22px;letter-spacing:-0.02em">По графику</div>
-            <div style="font-size:11px;color:var(--color-neutral-600);margin-top:4px;letter-spacing:0.04em">ОТГРУЗКА ПОД ТЕМП РАБОТ</div>
+            <div style="font-family:var(--font-heading);font-size:22px;letter-spacing:-0.02em">40 т</div>
+            <div style="font-size:11px;color:var(--color-neutral-600);margin-top:4px;letter-spacing:0.04em">В ОДНОЙ МАШИНЕ</div>
           </div>
           <div style="padding:18px 0 18px 28px">
             <div style="font-family:var(--font-heading);font-size:22px;letter-spacing:-0.02em">ЦФО · ЮФО</div>
@@ -721,8 +721,8 @@ textarea.input { min-height: 90px; resize: vertical; }
       <div class="l-hero-calc" style="padding:48px 0">
         <div class="card elev-lg" style="padding:0;overflow:hidden">
           <div class="l-calc-head" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--color-divider);background:rgba(233,233,237,0.02)">
-            <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-neutral-500)">Калькулятор партии · цена блока с доставкой</span>
-            <span class="tag tag-outline" style="font-size:10px">цены с НДС 22%</span>
+            <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-neutral-500)">Расчёт партии · цена блока с доставкой</span>
+            <span class="tag tag-outline" style="font-size:10px">с НДС 22 %</span>
           </div>
 
           <div class="l-calc-city" style="padding:20px 24px;display:grid;grid-template-columns:1.2fr 0.9fr;gap:16px;align-items:end;border-bottom:1px solid var(--color-divider)">
@@ -764,12 +764,12 @@ textarea.input { min-height: 90px; resize: vertical; }
           <div class="l-calc-total" style="padding:20px 24px;background:var(--color-section);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center">
             <div>
               <div class="l-total-sum" style="font-family:var(--font-heading);font-size:34px;letter-spacing:-0.03em;line-height:1">{{ total }} ₽</div>
-              <div style="font-size:12px;color:var(--color-accent-200);margin-top:6px">итого с НДС · {{ qtyTotal }} шт · {{ tons }} т · {{ trucks }} · средняя {{ avg }} ₽ за блок · график отгрузок согласуем под темп работ</div>
+              <div style="font-size:12px;color:var(--color-accent-200);margin-top:6px">итого с НДС · {{ qtyTotal }} шт · {{ tons }} т · {{ trucks }} · в среднем {{ avg }} ₽ за блок</div>
             </div>
             <a class="btn btn-primary" href="#request" style="text-decoration:none;padding:10px 20px;white-space:nowrap;background:rgba(233,233,237,0.06)">Запросить КП</a>
           </div>
           <sc-if value="{{ belowMin }}" hint-placeholder-val="{{ false }}">
-            <div style="padding:10px 24px;font-size:11.5px;color:var(--color-accent-200);background:var(--color-accent-900)">Минимальная партия — 200 блоков. Добавьте ещё {{ needMore }} шт или напишите: подберём попутную загрузку.</div>
+            <div style="padding:10px 24px;font-size:11.5px;color:var(--color-accent-200);background:var(--color-accent-900)">Минимальная партия — 200 блоков, не хватает {{ needMore }} шт. Если объём меньше — напишите, иногда удаётся подобрать попутную загрузку.</div>
           </sc-if>
         </div>
       </div>
@@ -779,7 +779,7 @@ textarea.input { min-height: 90px; resize: vertical; }
   <section id="how" style="scroll-margin-top:70px;border-bottom:1px solid var(--color-divider)">
     <div class="l-wrap" style="max-width:1280px;margin:0 auto;padding:0 40px">
       <div class="l-two l-how" style="display:grid;grid-template-columns:0.5fr 1fr;gap:64px;padding:80px 0 0">
-        <h2 class="l-h2" style="font-size:38px;letter-spacing:-0.03em;margin:0;line-height:1.05">Что закупщик<br> получает<br> вместе<br> с блоками</h2>
+        <h2 class="l-h2" style="font-size:38px;letter-spacing:-0.03em;margin:0;line-height:1.05">Как устроена<br> поставка</h2>
         <div>
           <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
             <div class="l-feature" style="display:grid;grid-template-columns:56px 1fr;gap:28px;padding:24px 0;border-top:1px solid var(--color-divider)">
@@ -801,8 +801,8 @@ textarea.input { min-height: 90px; resize: vertical; }
     <div class="l-wrap l-section l-two" style="max-width:1280px;margin:0 auto;padding:76px 40px;position:relative;display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center">
       <div>
         <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-200);margin-bottom:16px">Номенклатура</div>
-        <h2 class="l-h2" style="font-size:38px;letter-spacing:-0.03em;margin:0 0 12px">Шестёрки и четвёрки</h2>
-        <p style="color:var(--color-accent-200);margin:0 0 28px;max-width:52ch;line-height:1.65">Ширина 600 и 400 мм, высота 580 мм, тяжёлый бетон В22,5, морозостойкость F150. Веса — по ГОСТ 13579-2018. Цены указаны с НДС, без доставки.</p>
+        <h2 class="l-h2" style="font-size:38px;letter-spacing:-0.03em;margin:0 0 12px">Типоразмеры 600 и 400 мм</h2>
+        <p style="color:var(--color-accent-200);margin:0 0 28px;max-width:52ch;line-height:1.65">Высота 580 мм, тяжёлый бетон B22,5, морозостойкость F150. Масса — по ГОСТ 13579‑2018. Цены с НДС, без доставки.</p>
         <div class="l-table-scroll"><sc-raw-table class="table" style="width:100%;background:transparent">
           <sc-raw-thead>
             <sc-raw-tr><sc-raw-th style="color:var(--color-accent-200)">Марка</sc-raw-th><sc-raw-th style="color:var(--color-accent-200)">Размер, мм</sc-raw-th><sc-raw-th style="color:var(--color-accent-200)">Вес, т</sc-raw-th><sc-raw-th style="color:var(--color-accent-200)">В машине</sc-raw-th><sc-raw-th style="color:var(--color-accent-200);text-align:right">Цена, ₽/шт</sc-raw-th></sc-raw-tr>
@@ -885,12 +885,12 @@ textarea.input { min-height: 90px; resize: vertical; }
       <div class="l-geo-head" style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:32px">
         <div>
           <h2 class="l-h2" style="font-size:38px;letter-spacing:-0.03em;margin:0 0 10px">География поставок</h2>
-          <p style="color:var(--color-neutral-400);margin:0;max-width:60ch;line-height:1.65">На старте работаем по Москве, Центральному и Южному федеральным округам. Отмеченные точки — города, для которых калькулятор считает цену с доставкой; в другие города этих округов посчитаем по запросу.</p>
+          <p style="color:var(--color-neutral-400);margin:0;max-width:60ch;line-height:1.65">Работаем по Москве, Центральному и Южному федеральным округам. Точки на карте — города, для которых калькулятор считает цену с доставкой. В другие города этих округов посчитаем по запросу.</p>
         </div>
         <div style="display:grid;gap:8px;font-size:13px;color:var(--color-neutral-400);min-width:280px">
-          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Плечо — от завода с наличием</div>
-          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Машина {{ payload }} т — 20 блоков 24.6.6 или 40 блоков 12.6.6</div>
-          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Разгрузка манипулятором по согласованию</div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Плечо — от ближайшего завода с наличием</div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Машина {{ payload }} т: 20 блоков 24.6.6 или 40 блоков 12.6.6</div>
+          <div style="display:flex;gap:10px;align-items:baseline"><span style="width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex:none"></span>Разгрузка манипулятором — по согласованию</div>
         </div>
       </div>
       <x-import component-from-global-scope="russia-map" from="e4a930c8-ec3e-4541-897b-521a1f9bcadf#/russia-map.js" regions="{{ regionsAttr }}" hint-size="100%,480px"></x-import>
@@ -919,8 +919,8 @@ textarea.input { min-height: 90px; resize: vertical; }
   <section id="request" style="scroll-margin-top:70px">
     <div class="l-wrap l-section l-two" style="max-width:1280px;margin:0 auto;padding:76px 40px;display:grid;grid-template-columns:0.8fr 1.2fr;gap:64px;align-items:start">
       <div>
-        <h2 class="l-h2" style="font-size:38px;letter-spacing:-0.03em;margin:0 0 14px;line-height:1.05">Запросить<br> твёрдую цену</h2>
-        <p style="color:var(--color-neutral-400);margin:0 0 22px;max-width:38ch;line-height:1.65">КП с ценой с НДС на объекте, сроком отгрузки и паспортами качества — в течение рабочего дня.</p>
+        <h2 class="l-h2" style="font-size:38px;letter-spacing:-0.03em;margin:0 0 14px;line-height:1.05">Запросить<br> коммерческое<br> предложение</h2>
+        <p style="color:var(--color-neutral-400);margin:0 0 22px;max-width:38ch;line-height:1.65">В течение рабочего дня пришлём КП с ценой на объекте, графиком отгрузок и паспортами качества.</p>
         <div style="font-size:13px;color:var(--color-neutral-500);line-height:1.8;padding-top:20px;border-top:1px solid var(--color-divider)">
           {{ companyName }}<br>
           <a href="{{ phoneHref }}" style="text-decoration:none">{{ phone }}</a><br>
@@ -936,7 +936,7 @@ textarea.input { min-height: 90px; resize: vertical; }
             </div>
           </sc-if>
         </div>
-        <div class="f-hint" style="margin-top:12px">Есть готовая спецификация или ведомость — приложите файл к заявке, посчитаем КП по ней. Как мы обрабатываем данные — в <a href="privacy/" target="_blank" rel="noopener" style="text-decoration:none">политике конфиденциальности</a>.</div>
+        <div class="f-hint" style="margin-top:12px">Есть спецификация или ведомость — приложите файл, посчитаем по ней. Как мы обрабатываем данные — в <a href="privacy/" target="_blank" rel="noopener" style="text-decoration:none">политике конфиденциальности</a>.</div>
       </div>
   </section>
 
@@ -946,7 +946,7 @@ textarea.input { min-height: 90px; resize: vertical; }
         <img src="092a6bdb-fbb6-41b2-9a0f-85b79790c405" alt="Неруд-Логистик" style="width:60px;height:60px;object-fit:contain;background:var(--color-neutral-100);border-radius:var(--radius-md);padding:4px">
         <div style="font-size:12px;color:var(--color-neutral-500);line-height:1.6">{{ companyName }} · ИНН {{ inn }} · ОГРН {{ ogrn }}<br>{{ address }}<br><a href="{{ emailHref }}" style="text-decoration:none">{{ email }}</a> · <a href="{{ phoneHref }}" style="text-decoration:none">{{ phone }}</a></div>
       </div>
-      <div class="l-footer-right" style="font-size:12px;color:var(--color-neutral-600);text-align:right;line-height:1.6">Цены предварительные и не являются офертой<br><a href="privacy/" style="text-decoration:none;color:var(--color-neutral-500)">Политика обработки персональных данных</a><br>© 2026</div>
+      <div class="l-footer-right" style="font-size:12px;color:var(--color-neutral-600);text-align:right;line-height:1.6">Цены предварительные и не являются публичной офертой<br><a href="privacy/" style="text-decoration:none;color:var(--color-neutral-500)">Политика обработки персональных данных</a><br>© 2026</div>
     </div>
   </footer>
 </div>
@@ -1054,31 +1054,31 @@ const CITIES = [
 ];
 
 const FEATURES = [
-  { no: '01', title: 'Паспорта качества ГОСТ 13579-2018', body: 'На каждую партию — паспорт завода-изготовителя с маркой бетона, морозостойкостью и датой формовки. Работаем по договору с НДС, закрывающие приходят вместе с машиной.' },
-  { no: '02', title: 'Фотоотчёт перед отгрузкой', body: 'До выезда машины присылаем фото загруженного блока: маркировка, геометрия, состояние петель. Спорные позиции снимаем с отгрузки, а не с объекта.' },
-  { no: '03', title: 'Отгрузка с ближайшего завода', body: 'Считаем плечо от завода, где нужные типоразмеры есть в наличии сейчас, — не от единственного склада. Так короче путь и предсказуемее срок.' },
-  { no: '04', title: 'Партии от 200 блоков — под график стройки', body: 'Работаем с промышленным объёмом: подрядчики, ДСК, тендерные поставки. Крупную партию не обязательно принимать разом — разбиваем отгрузку на машины по вашему графику монтажа и по мере оплаты партий.' },
-  { no: '05', title: 'График отгрузок согласуем под темп работ на объекте', body: 'Дату первой машины и ритм следующих фиксируем в КП вместе с ценой. Если на объекте меняется темп — сдвигаем отгрузки, а не везём блоки на склад, где их некуда ставить.' },
-  { no: '06', title: 'Одна цифра вместо двух счетов', body: 'Транспорт зашит в цену блока, НДС уже включён. Сметчику не нужно отдельно защищать логистику — в КП стоит конечная цена на объекте.' }
+  { no: '01', title: 'Паспорт качества на каждую партию', body: 'Паспорт завода-изготовителя по ГОСТ 13579-2018: марка бетона, морозостойкость, дата формовки. Договор с НДС, УПД — вместе с машиной.' },
+  { no: '02', title: 'Фотоотчёт до выезда машины', body: 'Перед отправкой присылаем фото загруженной партии: маркировка, геометрия, монтажные петли. Брак остаётся на заводе, а не едет на объект.' },
+  { no: '03', title: 'Отгрузка с ближайшего завода', body: 'Плечо считаем от завода, где нужные типоразмеры есть в наличии сейчас. Короче путь — точнее срок.' },
+  { no: '04', title: 'Партии от 200 блоков', body: 'Работаем с подрядчиками, ДСК и тендерными поставками. Крупную партию разбиваем на машины по графику монтажа и по мере оплаты.' },
+  { no: '05', title: 'График отгрузок — под темп стройки', body: 'Дату первой машины и ритм остальных фиксируем в КП. Меняется темп на объекте — сдвигаем отгрузки, а не везём блоки на склад.' },
+  { no: '06', title: 'Одна цена вместо двух счетов', body: 'Доставка и НДС включены в цену блока. В КП — конечная цена на объекте, логистику не нужно защищать отдельной строкой.' }
 ];
 
 const FAQ = [
-  { q: 'Почему цена сразу с доставкой, а не отдельно?',
-    a: 'Мы поставляем блоки только с доставкой на объект — это позволяет держать ответственность за срок целиком на себе. Сметчику удобнее: в КП стоит конечная цена на площадке, логистику не нужно защищать отдельной строкой.' },
+  { q: 'Почему цена сразу с доставкой?',
+    a: 'Мы поставляем блоки только с доставкой на объект и отвечаем за срок целиком. В КП стоит одна цена — на площадке, с НДС. Логистику не нужно защищать отдельной строкой.' },
   { q: 'Как считается доставка?',
-    a: 'Рейсами, а не за тонно-километр. Стоимость рейса складывается из подачи машины с погрузкой и разгрузкой и из пробега до объекта — поэтому на коротком плече километр дороже, чем на длинном. В машину входит ' + CONFIG.payloadTons + ' тонн: 20 блоков ФБС 24.6.6 или 40 блоков 12.6.6. Число машин в партии считаем по суммарному весу, неполная последняя машина оплачивается как целая. Все суммы в калькуляторе показаны с НДС 22%.' },
+    a: 'По рейсам. Стоимость рейса — подача машины с погрузкой и разгрузкой плюс пробег до объекта, поэтому на коротком плече километр дороже, чем на длинном. В машину входит ' + CONFIG.payloadTons + ' т: 20 блоков 24.6.6 или 40 блоков 12.6.6. Число машин считаем по весу партии; неполная последняя машина оплачивается как целая.' },
   { q: 'Какой минимальный заказ?',
-    a: 'От 200 блоков. Меньшие объёмы мы не возим: под них не собирается экономика рейса. Если объём близок к границе, напишите — иногда получается подобрать попутную загрузку.' },
+    a: '200 блоков. Меньшие объёмы не возим — рейс не окупается. Если объём чуть меньше, напишите: иногда удаётся подобрать попутную загрузку.' },
   { q: 'Какие документы приходят с партией?',
-    a: 'Паспорт качества завода-изготовителя по ГОСТ 13579-2018 на каждую партию, УПД, договор поставки с НДС. Для тендерных процедур готовим полный комплект по требованиям заказчика.' },
-  { q: 'Можно ли увидеть блоки до отгрузки?',
-    a: 'Да. Перед выездом машины присылаем фотоотчёт: маркировку, геометрию, состояние монтажных петель. Позиции с браком снимаем с отгрузки на заводе, а не разбираем на вашем объекте.' },
+    a: 'Паспорт качества завода по ГОСТ 13579-2018 на партию, УПД, договор поставки с НДС. Для тендеров готовим комплект по требованиям заказчика.' },
+  { q: 'Можно увидеть блоки до отгрузки?',
+    a: 'Да. Перед выездом машины присылаем фотоотчёт: маркировка, геометрия, монтажные петли. Брак снимаем с отгрузки на заводе, а не разбираем на объекте.' },
   { q: 'Сколько ждать поставку?',
-    a: 'График отгрузок согласуем под темп работ на объекте: дату первой машины и ритм следующих фиксируем в КП. Отгружаем с ближайшего завода, где нужные типоразмеры есть в наличии, поэтому на срок влияет не расстояние, а текущая загрузка производства.' },
+    a: 'Дату первой машины и ритм следующих фиксируем в КП. Отгружаем с ближайшего завода с наличием, поэтому срок зависит от загрузки производства, а не от расстояния.' },
   { q: 'Какие условия оплаты?',
-    a: '100% предоплата по счёту, работаем по договору с НДС. Всю поставку разом оплачивать не нужно: разбиваем её на партии по графику отгрузок — счёт выставляем на очередную партию, после оплаты она уходит на объект. Так деньги не замораживаются в блоках, которые ещё не нужны на площадке.' },
+    a: '100 % предоплата по счёту, договор с НДС. Оплачивать всю поставку сразу не нужно: счёт выставляем на очередную партию по графику отгрузок, после оплаты она уходит на объект.' },
   { q: 'Кто разгружает машину на объекте?',
-    a: 'Разгрузка — зона ответственности заказчика. Блок ФБС 24.6.6 весит 1,96 т, поэтому на объекте нужен кран или манипулятор с запасом по вылету стрелы: с борта полуприцепа блок приходится брать на удалении 2–3 м от оси. Если своей техники нет — по согласованию организуем разгрузку манипулятором за отдельную плату, укажите это в заявке.' }
+    a: 'Разгрузка — на стороне заказчика. Блок 24.6.6 весит 1,96 т, нужен кран или манипулятор с запасом по вылету стрелы. Если своей техники нет, организуем разгрузку манипулятором за отдельную плату — укажите это в заявке.' }
 ];
 
 const fmt = n => Math.round(n).toLocaleString('ru-RU').replace(/,/g, ' ');
