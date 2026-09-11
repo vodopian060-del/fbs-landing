@@ -567,6 +567,11 @@ textarea.input { min-height: 90px; resize: vertical; }
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   input[type="number"] { -moz-appearance: textfield; }
+  .input.is-invalid { border-color: #e0716f; }
+  .f-error { font-size: 11.5px; color: #e9a3a1; margin-top: 5px; }
+  .f-hint { font-size: 11.5px; color: var(--color-neutral-600); margin-top: 5px; line-height: 1.5; }
+  input[type="file"].input { padding: 6px 10px; font-size: 13px; color: var(--color-neutral-400); cursor: pointer; }
+  input[type="file"].input::file-selector-button { font: inherit; font-size: 12px; margin-right: 10px; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--color-divider); background: transparent; color: var(--color-text); cursor: pointer; }
 </style>
 </helmet>
 
@@ -827,20 +832,53 @@ textarea.input { min-height: 90px; resize: vertical; }
         </div>
       </sc-if>
       <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
-        <form sc-camel-on-submit="{{ onSubmit }}" style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
-          <div class="field"><label for="fb-company">Компания или ИНН</label><input id="fb-company" class="input" required="{{ true }}" placeholder="ООО «Стройподряд» / 7701234567" style="width:100%"></div>
-          <div class="field"><label for="fb-name">Имя</label><input id="fb-name" class="input" required="{{ true }}" placeholder="Как к вам обращаться" style="width:100%"></div>
-          <div class="field"><label for="fb-phone">Телефон</label><input id="fb-phone" class="input" type="tel" required="{{ true }}" placeholder="+7 ___ ___-__-__" style="width:100%"></div>
-          <div class="field"><label for="fb-email">Рабочая почта</label><input id="fb-email" class="input" type="email" required="{{ true }}" placeholder="zakupki@company.ru" style="width:100%"></div>
-          <div class="field"><label for="fb-city">Город доставки</label><input id="fb-city" class="input" value="{{ city }}" sc-camel-on-change="{{ noop }}" style="width:100%"></div>
-          <div class="field" style="grid-column:1 / -1"><label for="fb-items">Типоразмеры и количество</label><input id="fb-items" class="input" value="{{ itemsSummary }}" sc-camel-on-change="{{ noop }}" placeholder="ФБС 24.6.6 — 400 шт" style="width:100%"></div>
+        <form sc-camel-on-submit="{{ onSubmit }}" sc-camel-no-validate="{{ true }}" style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <div class="field"><label for="fb-company">Компания или ИНН</label><input id="fb-company" name="company" class="input" required="{{ true }}" placeholder="ООО «Стройподряд» / 7701234567" style="width:100%"></div>
+          <div class="field"><label for="fb-name">Имя</label><input id="fb-name" name="name" class="input" required="{{ true }}" placeholder="Как к вам обращаться" style="width:100%"></div>
+          <div class="field">
+            <label for="fb-phone">Телефон</label>
+            <input id="fb-phone" name="phone" class="{{ phoneClass }}" type="tel" inputmode="tel" autocomplete="tel" required="{{ true }}" placeholder="+7 ___ ___-__-__" style="width:100%">
+            <sc-if value="{{ phoneInvalid }}" hint-placeholder-val="{{ false }}"><div class="f-error">{{ phoneError }}</div></sc-if>
+          </div>
+          <div class="field">
+            <label for="fb-email">Рабочая почта</label>
+            <input id="fb-email" name="email" class="{{ emailClass }}" type="email" inputmode="email" autocomplete="email" required="{{ true }}" placeholder="zakupki@company.ru" style="width:100%">
+            <sc-if value="{{ emailInvalid }}" hint-placeholder-val="{{ false }}"><div class="f-error">{{ emailError }}</div></sc-if>
+          </div>
+          <div class="field"><label for="fb-city">Город доставки</label><input id="fb-city" name="city" class="input" value="{{ formCity }}" sc-camel-on-change="{{ onFormCity }}" style="width:100%"></div>
+          <div class="field"><label for="fb-address">Адрес объекта</label><input id="fb-address" name="address" class="input" placeholder="Город, улица / координаты или название объекта" style="width:100%"></div>
+          <div class="field" style="grid-column:1 / -1">
+            <label for="fb-items">Типоразмеры и количество · из калькулятора</label>
+            <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+              <div id="fb-items" class="input" style="min-height:36px;display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;background:rgba(233,233,237,0.03);color:var(--color-neutral-300);font-size:13px">{{ itemsSummary }}<span style="color:var(--color-neutral-600)">· {{ total }} ₽ с НДС · {{ trucks }}</span></div>
+              <div class="f-hint">Изменить количество можно <a href="#calc" style="text-decoration:none">в калькуляторе</a>.</div>
+            </sc-if>
+            <sc-if value="{{ noItems }}" hint-placeholder-val="{{ false }}">
+              <div id="fb-items" class="input" style="min-height:36px;display:flex;align-items:center;background:rgba(233,233,237,0.03);color:var(--color-neutral-600);font-size:13px">Не указано — количество подставится из <a href="#calc" style="text-decoration:none;margin-left:4px">калькулятора</a></div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ attachmentsOn }}" hint-placeholder-val="{{ false }}">
+            <div class="field" style="grid-column:1 / -1">
+              <label for="fb-file">Спецификация или ведомость (xls, xlsx, pdf, до {{ maxFileMb }} МБ)</label>
+              <input id="fb-file" name="attachment" class="{{ fileClass }}" type="file" accept=".xls,.xlsx,.pdf,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="width:100%">
+              <sc-if value="{{ fileInvalid }}" hint-placeholder-val="{{ false }}"><div class="f-error">{{ fileError }}</div></sc-if>
+              <div class="f-hint">Если у вас уже есть ведомость материалов из проекта — приложите её, посчитаем КП по ней.</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ attachmentsOff }}" hint-placeholder-val="{{ true }}">
+            <div class="f-hint" style="grid-column:1 / -1;margin-top:-6px">Есть готовая спецификация или ведомость (xls, pdf)? Пришлите её на <a href="{{ emailHref }}" style="text-decoration:none">{{ email }}</a> — посчитаем КП по ней.</div>
+          </sc-if>
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
           <div style="grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:20px">
             <label for="fb-consent" style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--color-neutral-500);max-width:48ch;line-height:1.5;cursor:pointer">
               <input id="fb-consent" type="checkbox" checked="{{ consent }}" sc-camel-on-change="{{ onConsent }}" style="margin-top:2px;width:16px;height:16px;flex:none;accent-color:var(--color-accent);cursor:pointer">
               <span>Даю согласие на обработку персональных данных в соответствии с <a href="privacy/" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
             </label>
-            <button class="btn btn-primary" type="submit" disabled="{{ consentMissing }}" style="padding:11px 26px">Запросить КП</button>
+            <button class="btn btn-primary" type="submit" disabled="{{ submitDisabled }}" style="padding:11px 26px;white-space:nowrap">{{ submitLabel }}</button>
           </div>
+          <sc-if value="{{ hasFormError }}" hint-placeholder-val="{{ false }}">
+            <div style="grid-column:1 / -1;padding:12px 16px;border-radius:var(--radius-md);background:rgba(224,113,111,0.12);color:#f0b3b1;font-size:13px;line-height:1.5">{{ formError }}</div>
+          </sc-if>
         </form>
       </sc-if>
     </div>
@@ -880,6 +918,16 @@ const CONFIG = {
     phone: '+7 495 000-00-00',
     phoneHref: 'tel:+74950000000',
     email: 'zakaz@nerud-logistik.ru'
+  },
+  // Отправка заявки через Web3Forms (https://web3forms.com): ключ выдаётся на почту,
+  // письма приходят на неё же. Бэкенд не нужен, подходит для GitHub Pages.
+  form: {
+    endpoint: 'https://api.web3forms.com/submit',
+    accessKey: 'TODO_WEB3FORMS_ACCESS_KEY',   // TODO: заглушка — получить ключ на web3forms.com
+    // Вложение файла спецификации — платная функция Web3Forms (Pro, ~$12/мес, до 5 МБ).
+    // На бесплатном тарифе поле скрыто, вместо него подсказка «пришлите ведомость письмом».
+    attachments: false,
+    maxFileMb: 5
   }
 };
 
@@ -954,7 +1002,11 @@ const FAQ = [
 const fmt = n => Math.round(n).toLocaleString('ru-RU').replace(/,/g, ' ');
 
 class Component extends DCLogic {
-  state = { city: 'Москва', qty: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, openFaq: 0, sent: false, consent: false };
+  state = {
+    city: 'Москва', qty: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, openFaq: 0,
+    consent: false, formCity: null, sending: false, sent: false,
+    errors: { phone: '', email: '', file: '' }, formError: ''
+  };
 
   componentDidMount() { document.documentElement.lang = 'ru'; }
 
@@ -964,6 +1016,59 @@ class Component extends DCLogic {
     return km < b.short ? r.short : km < b.long ? r.mid : r.long;
   }
 
+  validPhone(v) { const d = v.replace(/\D/g, ''); return d.length === 11 && /^[78]/.test(d) || d.length === 10; }
+  validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); }
+
+  submitForm(e) {
+    e.preventDefault();
+    if (!this.state.consent || this.state.sending) return;
+    const form = e.target;
+    const val = n => (form.elements[n] && form.elements[n].value || '').trim();
+    const errors = { phone: '', email: '', file: '' };
+    if (!this.validPhone(val('phone'))) errors.phone = 'Укажите телефон с кодом города или оператора, например +7 495 123-45-67';
+    if (!this.validEmail(val('email'))) errors.email = 'Проверьте адрес почты';
+    const fileEl = form.elements.attachment;
+    const file = fileEl && fileEl.files && fileEl.files[0];
+    if (file) {
+      if (file.size > CONFIG.form.maxFileMb * 1024 * 1024) errors.file = 'Файл больше ' + CONFIG.form.maxFileMb + ' МБ — сожмите его или пришлите на почту';
+      else if (!/\.(xls|xlsx|pdf)$/i.test(file.name)) errors.file = 'Подойдёт xls, xlsx или pdf';
+    }
+    if (errors.phone || errors.email || errors.file) { this.setState({ errors, formError: '' }); return; }
+    if (!val('company') || !val('name')) { form.reportValidity(); return; }
+
+    const calc = this.calc();
+    const fd = new FormData();
+    fd.append('access_key', CONFIG.form.accessKey);
+    fd.append('subject', 'Заявка на КП: ФБС · ' + val('company'));
+    fd.append('from_name', 'Сайт ФБС — Неруд-Логистик');
+    fd.append('Компания', val('company'));
+    fd.append('Имя', val('name'));
+    fd.append('Телефон', val('phone'));
+    fd.append('Почта', val('email'));
+    fd.append('Город доставки', val('city') || calc.city);
+    fd.append('Адрес объекта', val('address') || '—');
+    fd.append('Типоразмеры', calc.itemsSummary || 'не указаны');
+    fd.append('Расчёт калькулятора', calc.itemsSummary
+      ? calc.qtyTotal + ' шт · ' + calc.tons + ' т · ' + calc.trucks + ' · ' + calc.total + ' ₽ с НДС (плечо ' + calc.legKm + ' км, ставка ' + calc.rate + ' ₽/т·км)'
+      : 'калькулятор не заполнен');
+    fd.append('Страница', location.href);
+    if (file && CONFIG.form.attachments) fd.append('attachment', file, file.name);
+    if (form.elements.botcheck && form.elements.botcheck.checked) fd.append('botcheck', 'on');
+
+    this.setState({ sending: true, errors, formError: '' });
+    fetch(CONFIG.form.endpoint, { method: 'POST', body: fd })
+      .then(r => r.json().catch(() => ({})).then(j => ({ ok: r.ok && j.success !== false, j })))
+      .then(({ ok, j }) => {
+        if (!ok) throw new Error(j && j.message || 'HTTP error');
+        this.setState({ sending: false, sent: true });
+        if (window.ym && CONFIG.metrika && CONFIG.metrika.id) window.ym(CONFIG.metrika.id, 'reachGoal', 'lead_form');
+      })
+      .catch(() => this.setState({
+        sending: false,
+        formError: 'Не удалось отправить заявку. Позвоните ' + CONFIG.company.phone + ' или напишите на ' + CONFIG.company.email + ' — ответим в течение рабочего дня.'
+      }));
+  }
+
   bump(i, d) {
     this.setState(st => {
       const v = Math.max(0, (st.qty[i] || 0) + d);
@@ -971,7 +1076,7 @@ class Component extends DCLogic {
     });
   }
 
-  renderVals() {
+  calc() {
     const [cityName, district, km] = this.cityData();
     const rate = this.rate(km);
     const k = K[district] || 1;
@@ -1000,16 +1105,27 @@ class Component extends DCLogic {
     rows.forEach(r => { total += r._per * r.qty; qtyTotal += r.qty; tons += r._w * r.qty; });
 
     return {
+      rows, city: cityName, legKm: km, rate, qtyTotal,
+      total: fmt(total),
+      tons: (Math.round(tons * 10) / 10).toLocaleString('ru-RU'),
+      trucks: Math.ceil(tons / CONFIG.payloadTons) + ' маш.',
+      avg: qtyTotal ? fmt(total / qtyTotal) : '0',
+      itemsSummary: rows.filter(r => r.qty > 0).map(r => r.code.replace('-Т', '') + ' — ' + r.qty + ' шт').join(', ')
+    };
+  }
+
+  renderVals() {
+    const c = this.calc();
+    const { rows, city: cityName, legKm: km, rate, qtyTotal } = c;
+    const st = this.state;
+
+    return {
       city: cityName, legKm: km, rate: rate, payload: CONFIG.payloadTons,
       cityOptions: CITIES.slice().sort((a, b) => a[0].localeCompare(b[0], 'ru'))
         .map(c => ({ name: c[0], label: c[0] + ' · ' + c[1] })),
       onCity: e => this.setState({ city: e.target.value }),
       rows: rows,
-      total: fmt(total),
-      avg: qtyTotal ? fmt(total / qtyTotal) : '0',
-      qtyTotal: qtyTotal,
-      tons: (Math.round(tons * 10) / 10).toLocaleString('ru-RU'),
-      trucks: Math.ceil(tons / CONFIG.payloadTons) + ' маш.',
+      total: c.total, avg: c.avg, qtyTotal: qtyTotal, tons: c.tons, trucks: c.trucks,
       belowMin: qtyTotal > 0 && qtyTotal < CONFIG.minOrderBlocks,
       needMore: Math.max(0, CONFIG.minOrderBlocks - qtyTotal),
       features: FEATURES,
@@ -1025,17 +1141,27 @@ class Component extends DCLogic {
         sign: this.state.openFaq === i ? '−' : '+',
         toggle: () => this.setState(st => ({ openFaq: st.openFaq === i ? -1 : i }))
       })),
-      itemsSummary: rows.filter(r => r.qty > 0).map(r => r.code.replace('-Т', '') + ' — ' + r.qty + ' шт').join(', '),
+      itemsSummary: c.itemsSummary,
+      hasItems: !!c.itemsSummary,
+      noItems: !c.itemsSummary,
+      formCity: st.formCity === null ? cityName : st.formCity,
+      onFormCity: e => this.setState({ formCity: e.target.value }),
+      phoneInvalid: !!st.errors.phone, phoneError: st.errors.phone, phoneClass: st.errors.phone ? 'input is-invalid' : 'input',
+      emailInvalid: !!st.errors.email, emailError: st.errors.email, emailClass: st.errors.email ? 'input is-invalid' : 'input',
+      fileInvalid: !!st.errors.file, fileError: st.errors.file, fileClass: st.errors.file ? 'input is-invalid' : 'input',
+      attachmentsOn: !!CONFIG.form.attachments, attachmentsOff: !CONFIG.form.attachments, maxFileMb: CONFIG.form.maxFileMb,
+      submitDisabled: !st.consent || st.sending,
+      submitLabel: st.sending ? 'Отправляем…' : 'Запросить КП',
+      hasFormError: !!st.formError, formError: st.formError,
       noop: () => {},
       companyName: CONFIG.company.name, inn: CONFIG.company.inn, ogrn: CONFIG.company.ogrn, address: CONFIG.company.address,
       phone: CONFIG.company.phone, phoneHref: CONFIG.company.phoneHref,
       email: CONFIG.company.email, emailHref: 'mailto:' + CONFIG.company.email,
-      consent: this.state.consent,
-      consentMissing: !this.state.consent,
+      consent: st.consent,
       onConsent: e => this.setState({ consent: !!e.target.checked }),
-      sent: this.state.sent,
-      notSent: !this.state.sent,
-      onSubmit: e => { e.preventDefault(); if (!this.state.consent) return; this.setState({ sent: true }); }
+      sent: st.sent,
+      notSent: !st.sent,
+      onSubmit: e => this.submitForm(e)
     };
   }
 }
