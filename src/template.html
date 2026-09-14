@@ -944,7 +944,7 @@ textarea.input { min-height: 90px; resize: vertical; }
     <div class="l-wrap l-footer" style="max-width:1280px;margin:0 auto;padding:28px 40px 44px;display:flex;align-items:center;justify-content:space-between;gap:32px">
       <div style="display:flex;align-items:center;gap:16px">
         <img src="092a6bdb-fbb6-41b2-9a0f-85b79790c405" alt="Неруд-Логистик" style="width:60px;height:60px;object-fit:contain;background:var(--color-neutral-100);border-radius:var(--radius-md);padding:4px">
-        <div style="font-size:12px;color:var(--color-neutral-500);line-height:1.6">{{ companyName }} · ИНН {{ inn }} · ОГРН {{ ogrn }}<br>{{ address }}<br><a href="{{ emailHref }}" style="text-decoration:none">{{ email }}</a> · <a href="{{ phoneHref }}" style="text-decoration:none">{{ phone }}</a></div>
+        <div style="font-size:12px;color:var(--color-neutral-500);line-height:1.6">{{ companyName }} · ИНН {{ inn }} · ОГРН {{ ogrn }}<br><a href="{{ emailHref }}" style="text-decoration:none">{{ email }}</a> · <a href="{{ phoneHref }}" style="text-decoration:none">{{ phone }}</a></div>
       </div>
       <div class="l-footer-right" style="font-size:12px;color:var(--color-neutral-600);text-align:right;line-height:1.6">Цены предварительные и не являются публичной офертой<br><a href="privacy/" style="text-decoration:none;color:var(--color-neutral-500)">Политика обработки персональных данных</a><br>© 2026</div>
     </div>
@@ -975,12 +975,11 @@ const CONFIG = {
   // TODO: финальный список регионов подтвердить.
   regions: ['ЦФО', 'ЮФО'],
   regionsLabel: 'Москва, ЦФО и ЮФО',
-  // Реквизиты и контакты. TODO: заглушки — подставить реальные.
+  // Реквизиты и контакты.
   company: {
     name: 'ООО «Неруд-Логистик»',
-    inn: '0000000000',
-    ogrn: '0000000000000',
-    address: '000000, г. Москва, ул. ____________, д. __',
+    inn: '6163228958',
+    ogrn: '1236100010882',
     phone: '+7 928 611-12-14',
     phoneHref: 'tel:+79286111214',
     email: 'zakaz@neryd-logistic.ru'
@@ -1265,7 +1264,7 @@ class Component extends DCLogic {
       })),
       itemsSummary: c.itemsSummary,
       formFailed: st.formFailed,
-      companyName: CONFIG.company.name, inn: CONFIG.company.inn, ogrn: CONFIG.company.ogrn, address: CONFIG.company.address,
+      companyName: CONFIG.company.name, inn: CONFIG.company.inn, ogrn: CONFIG.company.ogrn,
       phone: CONFIG.company.phone, phoneHref: CONFIG.company.phoneHref,
       email: CONFIG.company.email, emailHref: 'mailto:' + CONFIG.company.email
     };
