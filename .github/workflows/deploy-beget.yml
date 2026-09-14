@@ -1,0 +1,37 @@
+# Выкладка на Beget по FTP при каждом пуше в main (и вручную кнопкой Run workflow).
+# Секреты FTP_HOST / FTP_USER / FTP_PASSWORD задаются в настройках репозитория.
+name: Deploy to Beget
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-beget
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./
+          server-dir: ./
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            src/**
+            tools/**
+            README.md
+            .gitattributes

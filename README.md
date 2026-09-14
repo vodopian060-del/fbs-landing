@@ -1,7 +1,11 @@
 # fbs-landing
 Лендинг: блоки ФБС по ГОСТ 13579-2018 оптом — Неруд-Логистик
 
-Публикуется на GitHub Pages: https://vodopian060-del.github.io/fbs-landing/
+Рабочий сайт: https://fbs-blok.ru (хостинг Beget, выкладка по FTP через GitHub Actions при пуше в `main`).
+Черновик-превью: https://vodopian060-del.github.io/fbs-landing/ (GitHub Pages, тот же `main`).
+
+Для автовыкладки в репозитории должны быть секреты `FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`
+(Settings → Secrets and variables → Actions). Workflow: `.github/workflows/deploy-beget.yml`.
 
 ## Как устроено
 

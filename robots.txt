@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /privacy/
 
-Sitemap: https://vodopian060-del.github.io/fbs-landing/sitemap.xml
+Sitemap: https://fbs-blok.ru/sitemap.xml
