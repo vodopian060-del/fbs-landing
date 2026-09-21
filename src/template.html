@@ -1117,6 +1117,7 @@ class Component extends DCLogic {
   componentDidMount() {
     document.documentElement.lang = 'ru';
     this.mountMetrika();
+    this.trackEmailIntent();
     this.mountBitrixForm();
   }
 
@@ -1193,6 +1194,30 @@ class Component extends DCLogic {
       k.async = 1; k.src = r; a.parentNode.insertBefore(k, a);
     })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
     window.ym(id, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true });
+  }
+
+  // ----- Намерение написать письмом -----
+  // Заявки по ФБС приходят не через форму: закупщик копирует адрес со страницы
+  // и пишет со своего ящика. Такое письмо с визитом ничем не связано, поэтому
+  // фиксируем последний измеримый шаг перед ним — клик по mailto или копирование
+  // адреса. Цель email_copy должна быть заведена в счётчике как JavaScript-событие.
+  trackEmailIntent() {
+    const id = Number(CONFIG.metrika && CONFIG.metrika.id);
+    if (!id) return;
+    let sent = false;
+    const reach = () => {
+      if (sent || !window.ym) return;
+      sent = true;
+      window.ym(id, 'reachGoal', 'email_copy');
+    };
+    document.addEventListener('click', (e) => {
+      const el = e.target;
+      if (el && el.closest && el.closest('a[href^="mailto:"]')) reach();
+    }, true);
+    document.addEventListener('copy', () => {
+      const sel = String((window.getSelection && window.getSelection()) || '');
+      if (sel && sel.indexOf(CONFIG.company.email) !== -1) reach();
+    }, true);
   }
 
   cityData() { return CITIES.find(c => c[0] === this.state.city) || CITIES[0]; }
